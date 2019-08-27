@@ -1,7 +1,7 @@
 # InstagramCrawler
 Automated instagram crawler
 
-Steps to run the crawler
+Steps to run the crawler:
 
 1. Install scrapy library:
     pip3 install scrapy
