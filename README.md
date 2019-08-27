@@ -9,4 +9,4 @@ Steps to run the crawler:
       scrapy crawl insta_crawler
       
  
-# main python file is located at: InstaCrawler/spiders/insta_crawler.py
+main python file is located at: InstaCrawler/spiders/insta_crawler.py
