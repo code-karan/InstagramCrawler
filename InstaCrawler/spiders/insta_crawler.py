@@ -15,12 +15,14 @@ class InstaCrawlerSpider(Spider):
         #opt.add_extension("/home/karan/Desktop/InstaCrawler/Block-image_v1.1.crx")
         #browser = webdriver.Chrome(chrome_options=opt)
         self.driver = webdriver.Chrome('/home/karan/Desktop/chromedriver')
+
+        # get profile page
         self.driver.get('https://www.instagram.com/chrishemsworth')
         
         
         
         
-        
+
         #scroll through an infinite page
 
         # Get scroll height
@@ -31,7 +33,37 @@ class InstaCrawlerSpider(Spider):
                 self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
                 # Wait to load page
-                sleep(4)
+                sleep(6)
+                # assign page source
+                self.select_profile = Selector(text = self.driver.page_source)
+
+                # fetch all posts
+                sleep(1)
+                posts = self.select_profile.xpath('//*[@class="v1Nh3 kIKUG  _bz0w"]/a/@href').extract()
+                self.post_caption_list = []
+                #self.post_likes_list = []
+                for post in posts:
+                    sleep(1)
+                    post_url = 'https://instagram.com/' + post
+                    self.driver.get(post_url)
+                    
+                    #fetch post caption
+                    self.select_post = Selector(text = self.driver.page_source)
+                    self.post_caption = self.select_post.xpath('//*[@class="C4VMK"]/span/text()').extract()
+                    #self.post_caption = self.driver.find_element_by_xpath('//*[@class="C4VMK"]/span').text
+                    self.post_caption_list.append(self.post_caption)
+
+                    #self.post_likes = self.driver.find_element_by_xpath('//*[@class="_0mzm- sqdOP yWX7d    _8A5w5    "]/span').text
+                    #self.post_likes_list.append(self.post_likes)
+                #done with posts
+
+                # back to profile page
+                self.driver.get('https://www.instagram.com/chrishemsworth')
+
+                # scroll to last height
+                self.driver.execute_script("window.scrollTo(0, {});".format(last_height))
+                sleep(8)
+
 
                 # Calculate new scroll height and compare with last scroll height
                 new_height = self.driver.execute_script("return document.body.scrollHeight")
@@ -43,27 +75,11 @@ class InstaCrawlerSpider(Spider):
 
 
         
-        self.select_profile = Selector(text = self.driver.page_source)
         
-        #process all posts
-        sleep(1)
-        posts = self.select_profile.xpath('//*[@class="v1Nh3 kIKUG  _bz0w"]/a/@href').extract()
-        self.post_caption_list = []
-        #self.post_likes_list = []
+        
+        
 
-        for post in posts:
-            sleep(1)
-            post_url = 'https://instagram.com/' + post
-            self.driver.get(post_url)
-            
-            #fetch post caption
-            self.select_post = Selector(text = self.driver.page_source)
-            self.post_caption = self.select_post.xpath('//*[@class="C4VMK"]/span/text()').extract()
-            #self.post_caption = self.driver.find_element_by_xpath('//*[@class="C4VMK"]/span').text
-            self.post_caption_list.append(self.post_caption)
 
-            #self.post_likes = self.driver.find_element_by_xpath('//*[@class="_0mzm- sqdOP yWX7d    _8A5w5    "]/span').text
-            #self.post_likes_list.append(self.post_likes)
 
                 
         
